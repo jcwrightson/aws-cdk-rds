@@ -1,6 +1,6 @@
-# Welcome to your CDK TypeScript project!
+# CDK apigw + aurora + lambda proxy
 
-This is a blank project for TypeScript development with CDK.
+Boilerplate for CDK
 
 The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
