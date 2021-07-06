@@ -50,10 +50,7 @@ export class CdkRdsTsStack extends cdk.Stack {
       // Some basic cors config
       corsPreflight: {
         allowMethods: [
-          apigw.CorsHttpMethod.GET,
-          apigw.CorsHttpMethod.PUT,
-          apigw.CorsHttpMethod.OPTIONS,
-          apigw.CorsHttpMethod.POST,
+          apigw.CorsHttpMethod.ANY
         ],
         allowOrigins: ['*'], // ToDo: Change this to frontend URL later
       },
