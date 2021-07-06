@@ -4,6 +4,7 @@ import * as rds from '@aws-cdk/aws-rds'
 import * as apigw from '@aws-cdk/aws-apigatewayv2'
 import * as ec2 from '@aws-cdk/aws-ec2'
 import * as integrations from '@aws-cdk/aws-apigatewayv2-integrations'
+import * as iam from '@aws-cdk/aws-iam'
 
 export class CdkRdsTsStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -65,7 +66,15 @@ export class CdkRdsTsStack extends cdk.Stack {
       }),
     })
 
-    // 5. Output the API URL so we can use it
+    // 5. IAM: Add Permissions Boundary to all entities created by stack (optional)
+    const boundary = iam.ManagedPolicy.fromManagedPolicyArn(
+      this,
+      'Boundary',
+      'arn:aws:iam::745580839125:policy/ScopePermissions'
+    )
+    iam.PermissionsBoundary.of(this).apply(boundary)
+
+    // 6. Output the API URL so we can use it
     new cdk.CfnOutput(this, 'API URL', {
       value: api.url ?? 'No URL',
     })
