@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS todo (
-  ID varchar(255) NOT NULL PRIMARY KEY,
-  Task varchar(255) NOT NULL,
-  Complete boolean DEFAULT FALSE
+  id varchar(255) NOT NULL PRIMARY KEY,
+  task varchar(255) NOT NULL,
+  complete boolean DEFAULT FALSE
 )

@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+
 const { getCurrentInvoke } = require('@vendia/serverless-express')
 const { getTodos, createTodo, updateTodo } = require('./db')
 
