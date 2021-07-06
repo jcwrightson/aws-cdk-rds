@@ -27,24 +27,7 @@ export class CdkRdsTsStack extends cdk.Stack {
       scaling: { autoPause: cdk.Duration.seconds(0) }, // Prevents DB from pausing
     })
 
-    // 3. Create a lambda function
-    const todosLambda = new lambda.Function(this, 'todosLambda', {
-      runtime: lambda.Runtime.NODEJS_14_X,
-      code: new lambda.AssetCode('functions'),
-      handler: 'todos.handler',
-      environment: {
-        DB_NAME: 'dev',
-        CLUSTER_ARN: cluster.clusterArn,
-        SECRET_ARN: cluster.secret?.secretArn || '', // Our cluster auto creates a secret, map the ARN to our lambda env for later
-        AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1', // AWS specific var to resuse TCP connection https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/node-reusing-connections.html
-      },
-    })
-
-    // We're using the AWS Data API to query our DB.
-    // Grant the lambda access to the cluster
-    cluster.grantDataApiAccess(todosLambda)
-
-    // 4. Create an API to interact with our DB
+    // 3. Create an API to interact with our DB
     const api = new apigw.HttpApi(this, 'Endpoint', {
       // Some basic cors config
       corsPreflight: {
@@ -58,7 +41,26 @@ export class CdkRdsTsStack extends cdk.Stack {
       },
     })
 
-    // 5. Add a route
+    // 4. Create a lambda function
+    const todosLambda = new lambda.Function(this, 'todosLambda', {
+      runtime: lambda.Runtime.NODEJS_14_X,
+      code: new lambda.AssetCode('functions'),
+      handler: 'todos.handler',
+      environment: {
+        DB_NAME: 'dev',
+        CLUSTER_ARN: cluster.clusterArn,
+        SECRET_ARN: cluster.secret?.secretArn || '', // Our cluster auto creates a secret, map the ARN to our lambda env for later
+        AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1', // AWS specific var to resuse TCP connection https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/node-reusing-connections.html
+      },
+    })
+
+
+    // 5. Setup permissions
+    // We're using the AWS Data API to query our DB.
+    // Grant the lambda R/W access to the cluster
+    cluster.grantDataApiAccess(todosLambda)
+
+    // 6. Add an API route
     api.addRoutes({
       path: '/todos',
       methods: [apigw.HttpMethod.ANY],
@@ -67,7 +69,7 @@ export class CdkRdsTsStack extends cdk.Stack {
       }),
     })
 
-    // 6. Output the API URL so we can use it
+    // 7. Output the API URL so we can use it
     new cdk.CfnOutput(this, 'API URL', {
       value: api.url ?? 'No URL',
     })
