@@ -1,6 +1,6 @@
 const { getTodos, createTodo, updateTodo } = require('./db')
 
-exports.handleTodos = async (event) => {
+exports.handler = async (event) => {
   const { http } = event.requestContext
   let body
 

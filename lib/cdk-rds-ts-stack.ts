@@ -28,10 +28,10 @@ export class CdkRdsTsStack extends cdk.Stack {
     })
 
     // 3. Create a lambda function
-    const endpointLambda = new lambda.Function(this, 'endpointLambda', {
+    const todosLambda = new lambda.Function(this, 'todosLambda', {
       runtime: lambda.Runtime.NODEJS_14_X,
       code: new lambda.AssetCode('functions'),
-      handler: 'index.handler',
+      handler: 'todos.handler',
       environment: {
         DB_NAME: 'dev',
         CLUSTER_ARN: cluster.clusterArn,
@@ -42,7 +42,7 @@ export class CdkRdsTsStack extends cdk.Stack {
 
     // We're using the AWS Data API to query our DB.
     // Grant the lambda access to the cluster
-    cluster.grantDataApiAccess(endpointLambda)
+    cluster.grantDataApiAccess(todosLambda)
 
     // 4. Create an API to interact with our DB
     const api = new apigw.HttpApi(this, 'Endpoint', {
@@ -56,13 +56,17 @@ export class CdkRdsTsStack extends cdk.Stack {
         ],
         allowOrigins: ['*'], // ToDo: Change this to frontend URL later
       },
-      // Setup a lambda proxy and route all requests to one lambda
-      defaultIntegration: new integrations.LambdaProxyIntegration({
-        handler: endpointLambda,
+    })
+
+    // 5. Add a route
+    api.addRoutes({
+      path: '/todos',
+      integration: new integrations.LambdaProxyIntegration({
+        handler: todosLambda,
       }),
     })
 
-    // 5. Output the API URL so we can use it
+    // 6. Output the API URL so we can use it
     new cdk.CfnOutput(this, 'API URL', {
       value: api.url ?? 'No URL',
     })
