@@ -1,17 +1,30 @@
 const express = require('express')
-const { getTodos, createTodo, updateTodo } = require('./db')
 const app = express()
+const { getCurrentInvoke } = require('@vendia/serverless-express')
+const { getTodos, createTodo, updateTodo } = require('./db')
 
-const awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
-
-app.use(awsServerlessExpressMiddleware.eventContext())
 
 app.get('/todos', async (req, res) => {
   const todos = await getTodos()
   res.json(todos)
 })
 
-app.use('*', (req, res) => {
-  res.json(req.apiGateway.event)
+app.post('/todos', async (req, res) => {
+  const { event } = getCurrentInvoke()
+  const body = JSON.parse(event.body)
+  const todo = await createTodo(body.todo)
+  res.json(todo)
 })
+
+app.put('/todos', async (req, res) => {
+  const { event } = getCurrentInvoke()
+  const body = JSON.parse(event.body)
+  const updated = await updateTodo(body.id)
+  res.json(updated)
+})
+
+app.use('*', (req, res) => {
+  res.sendStatus(418)
+})
+
 module.exports = app
