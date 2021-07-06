@@ -61,6 +61,7 @@ export class CdkRdsTsStack extends cdk.Stack {
     // 5. Add a route
     api.addRoutes({
       path: '/todos',
+      methods: [apigw.HttpMethod.ANY],
       integration: new integrations.LambdaProxyIntegration({
         handler: todosLambda,
       }),
