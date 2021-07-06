@@ -6,7 +6,7 @@ import * as ec2 from '@aws-cdk/aws-ec2'
 import * as integrations from '@aws-cdk/aws-apigatewayv2-integrations'
 import * as iam from '@aws-cdk/aws-iam'
 
-export class CdkRdsTsStack extends cdk.Stack {
+export class CdkRdsApiStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props)
 
