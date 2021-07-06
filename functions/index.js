@@ -1,14 +1,8 @@
-const { handleTodos } = require('./todos')
+// const { handleTodos } = require('./todos')
+const awsServerlessExpress = require('aws-serverless-express')
+const app = require('./app')
+const server = awsServerlessExpress.createServer(app)
 
-exports.handler = async (event, context) => {
-  const { http } = event.requestContext
-
-  switch (http.path) {
-    case '/':
-      return { statusCode: 200, body: JSON.stringify(event) }
-    case '/todos':
-      return handleTodos(event)
-    default:
-      return null
-  }
+exports.handler = (event, context) => {
+  awsServerlessExpress.proxy(server, event, context)
 }

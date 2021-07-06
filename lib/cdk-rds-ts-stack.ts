@@ -56,8 +56,11 @@ export class CdkRdsTsStack extends cdk.Stack {
         ],
         allowOrigins: ['*'], // ToDo: Change this to frontend URL later
       },
-      // Setup a lambda proxy and route all requests to one lambda
-      defaultIntegration: new integrations.LambdaProxyIntegration({
+    })
+
+    api.addRoutes({
+      path: '/{proxy+}',
+      integration: new integrations.LambdaProxyIntegration({
         handler: endpointLambda,
       }),
     })
