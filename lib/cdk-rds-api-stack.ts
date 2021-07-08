@@ -73,7 +73,7 @@ export class CdkRdsApiStack extends cdk.Stack {
     const boundary = iam.ManagedPolicy.fromManagedPolicyArn(
       this,
       'Boundary',
-      'arn:aws:iam::745580839125:policy/ScopePermissions'
+      `arn:aws:iam::${process.env.AWS_ACCOUNT}:policy/ScopePermissions`
     )
     iam.PermissionsBoundary.of(this).apply(boundary)
 
