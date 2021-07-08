@@ -49,9 +49,7 @@ export class CdkRdsTsStack extends cdk.Stack {
     const api = new apigw.HttpApi(this, 'Endpoint', {
       // Some basic cors config
       corsPreflight: {
-        allowMethods: [
-          apigw.CorsHttpMethod.ANY
-        ],
+        allowMethods: [apigw.CorsHttpMethod.ANY],
         allowOrigins: ['*'], // ToDo: Change this to frontend URL later
       },
     })
@@ -67,7 +65,7 @@ export class CdkRdsTsStack extends cdk.Stack {
     const boundary = iam.ManagedPolicy.fromManagedPolicyArn(
       this,
       'Boundary',
-      'arn:aws:iam::745580839125:policy/ScopePermissions'
+      `arn:aws:iam::${process.env.AWS_ACCOUNT}:policy/ScopePermissions`
     )
     iam.PermissionsBoundary.of(this).apply(boundary)
 
